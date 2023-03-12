@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import KFold
 
 class RNNTrainer:
@@ -70,34 +69,28 @@ class RNNTrainer:
         accuracy = 100 * correct / total
         return accuracy
 
-    def k_fold_cross_validation(self, X, y, k=5):
-      """
-      Perform k-fold cross-validation on the RNN model using a training dataset.
+    def k_fold_cross_validation(self, train_dataset, k=5):
+        """
+        Perform k-fold cross-validation on the RNN model using a training dataset.
 
-      Parameters:
-      - X (Tensor): The input tensor of shape (n_samples, n_features).
-      - y (Tensor): The label tensor of shape (n_samples).
-      - k (int, optional): The number of folds for cross-validation. Default is 5.
+        Parameters:
+        - train_dataset (Dataset): The training dataset to use for k-fold cross-validation.
+        - k (int, optional): The number of folds for cross-validation. Default is 5.
 
-      Returns:
-      - accuracies (List[float]): A list of accuracies for each fold of cross-validation.
-      """
-      kf = KFold(n_splits=k)
-      accuracies = []
-      for train_index, valid_index in kf.split(X):
-          print("train_index: " + str(train_index) + ", valid_index: " + str(train_index))
-          X_train, X_valid = X[train_index], X[valid_index]
-          y_train, y_valid = y[train_index], y[valid_index]
+        Returns:
+        - accuracies (List[float]): A list of accuracies for each fold of cross-validation.
+        """
+        kf = KFold(n_splits=k)
+        accuracies = []
+        for train_index, valid_index in kf.split(train_dataset):
+            train_subset = torch.utils.data.Subset(train_dataset, train_index)
+            valid_subset = torch.utils.data.Subset(train_dataset, valid_index)
 
-          train_dataset = TensorDataset(X_train, y_train)
-          valid_dataset = TensorDataset(X_valid, y_valid)
+            train_loader = torch.utils.data.DataLoader(train_subset, batch_size=64, shuffle=True)
+            valid_loader = torch.utils.data.DataLoader(valid_subset, batch_size=64, shuffle=False)
 
-          train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-          valid_loader = DataLoader(valid_dataset, batch_size=64, shuffle=False)
-
-          self.train(train_loader, num_epochs=5)
-          accuracy = self.validate(valid_loader)
-          accuracies.append(accuracy)
-
-      return accuracies
-
+            self.train(train_loader, num_epochs=5)
+            accuracy = self.validate(valid_loader)
+            accuracies.append(accuracy)
+        
+        return accuracies

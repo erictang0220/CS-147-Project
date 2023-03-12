@@ -12,7 +12,6 @@ class RNNTrainer:
     def __init__(self, rnn, learning_rate):
         """
         Initialize the trainer with an RNN model and a learning rate.
-
         Parameters:
         - rnn (nn.Module): The RNN model to train.
         - learning_rate (float): The learning rate for optimization.
@@ -25,7 +24,6 @@ class RNNTrainer:
     def train(self, train_loader, num_epochs):
         """
         Train the RNN model using a DataLoader for a fixed number of epochs.
-
         Parameters:
         - train_loader (DataLoader): The DataLoader containing the training dataset.
         - num_epochs (int): The number of epochs to train for.
@@ -49,10 +47,8 @@ class RNNTrainer:
     def validate(self, valid_loader):
         """
         Evaluate the RNN model on a validation DataLoader and return the accuracy.
-
         Parameters:
         - valid_loader (DataLoader): The DataLoader containing the validation dataset.
-
         Returns:
         - accuracy (float): The accuracy of the model on the validation dataset.
         """
@@ -73,12 +69,10 @@ class RNNTrainer:
     def k_fold_cross_validation(self, X, y, k=5):
       """
       Perform k-fold cross-validation on the RNN model using a training dataset.
-
       Parameters:
       - X (Tensor): The input tensor of shape (n_samples, n_features).
       - y (Tensor): The label tensor of shape (n_samples).
       - k (int, optional): The number of folds for cross-validation. Default is 5.
-
       Returns:
       - accuracies (List[float]): A list of accuracies for each fold of cross-validation.
       """
@@ -100,4 +94,3 @@ class RNNTrainer:
           accuracies.append(accuracy)
 
       return accuracies
-

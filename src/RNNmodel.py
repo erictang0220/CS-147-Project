@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 class RNNClassifier(nn.Module):
     def __init__(self, input_dim=22, hidden_dim=20, output_dim=4):
@@ -22,5 +23,8 @@ class RNNClassifier(nn.Module):
             # We detach h_0 (not required, just recommended) so that the computational graph does not extend too far.
             z, hn = self.rnn(z, h_0.detach()) # (batch_size, timesteps, input_dim) -> (batch_size, timesteps, hidden_dim)
         # hn is the stored hidden state after computation
+        
         out = self.fc(z[:, -1, :])
+        # add ReLU activation function
+        out = F.relu(out) 
         return out

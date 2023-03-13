@@ -1,3 +1,5 @@
+import numpy as np
+
 def data_prep(X,y,sub_sample,average,noise):
     
     total_X = None
@@ -36,4 +38,3 @@ def data_prep(X,y,sub_sample,average,noise):
     
     print('Shape of X after subsampling and concatenating:',total_X.shape)
     return total_X,total_y
-
